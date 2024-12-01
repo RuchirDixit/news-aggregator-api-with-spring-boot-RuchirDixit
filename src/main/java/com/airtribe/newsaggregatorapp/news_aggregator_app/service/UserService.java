@@ -8,6 +8,7 @@ import com.airtribe.newsaggregatorapp.news_aggregator_app.repository.NewsPrefere
 import com.airtribe.newsaggregatorapp.news_aggregator_app.repository.UserRepository;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +23,14 @@ public class UserService {
     @Autowired
     private NewsPreferenceRepository newsPreferenceRepository;
 
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(PasswordEncoder passwordEncoder){
+
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     public String register(UserDTO userDto) {
         if(userRepository.findByEmail(userDto.getEmail()) != null) {
@@ -34,7 +43,7 @@ public class UserService {
     private Users convertUserDtoToUsersEntity(UserDTO userDto) {
         Users users = new Users();
         users.setEmail(userDto.getEmail());
-        users.setPassword(userDto.getPassword());
+        users.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         users.setUsername(userDto.getUsername());
         List<NewsPreference> preferenceList = new ArrayList<>();
         // save users news preference in separate table mapped with user_id

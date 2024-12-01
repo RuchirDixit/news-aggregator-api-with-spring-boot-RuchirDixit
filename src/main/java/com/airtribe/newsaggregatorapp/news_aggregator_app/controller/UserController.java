@@ -1,5 +1,7 @@
 package com.airtribe.newsaggregatorapp.news_aggregator_app.controller;
 
+import com.airtribe.newsaggregatorapp.news_aggregator_app.config.JWTUtil;
+import com.airtribe.newsaggregatorapp.news_aggregator_app.dto.LoginRequestDTO;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.dto.UserDTO;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.exceptionhandling.UserAlreadyExistsException;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.service.UserService;
@@ -7,6 +9,9 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +23,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserDTO userDto) {
@@ -32,5 +43,14 @@ public class UserController {
         }
 
         return ResponseEntity.badRequest().body(returnMessage);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<String> signin(@RequestBody LoginRequestDTO userLoginRequestDTO) {
+        Authentication authentication =  authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLoginRequestDTO.getUsername(), userLoginRequestDTO.getPassword())
+            );
+        String token = jwtUtil.generateToken(authentication.getName());
+        return ResponseEntity.ok(token);
     }
 }
