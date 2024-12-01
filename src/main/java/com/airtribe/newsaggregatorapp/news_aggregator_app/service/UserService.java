@@ -3,8 +3,10 @@ package com.airtribe.newsaggregatorapp.news_aggregator_app.service;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.dto.UserDTO;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.entity.NewsPreference;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.entity.Users;
+import com.airtribe.newsaggregatorapp.news_aggregator_app.exceptionhandling.UserAlreadyExistsException;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.repository.NewsPreferenceRepository;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.repository.UserRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class UserService {
 
     public String register(UserDTO userDto) {
         if(userRepository.findByEmail(userDto.getEmail()) != null) {
-            return "Email Already Exists";
+            throw new UserAlreadyExistsException("User already exists");
         }
         userRepository.save(convertUserDtoToUsersEntity(userDto));
         return "User Registration Successful";

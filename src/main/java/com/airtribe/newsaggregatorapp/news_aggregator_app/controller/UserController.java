@@ -1,7 +1,10 @@
 package com.airtribe.newsaggregatorapp.news_aggregator_app.controller;
 
 import com.airtribe.newsaggregatorapp.news_aggregator_app.dto.UserDTO;
+import com.airtribe.newsaggregatorapp.news_aggregator_app.exceptionhandling.UserAlreadyExistsException;
 import com.airtribe.newsaggregatorapp.news_aggregator_app.service.UserService;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +20,17 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserDTO userDto) {
-        if(userService.register(userDto).equals("User Registration Successful")) {
-            return ResponseEntity.ok("User Registration Successful");
+    public ResponseEntity<String> register(@Valid @RequestBody UserDTO userDto) {
+        String returnMessage = "";
+        try{
+            if(userService.register(userDto).equals("User Registration Successful")) {
+                return ResponseEntity.ok("User Registration Successful");
+            }
         }
-        else{
-            return ResponseEntity.badRequest().body("Email Already Exists");
+        catch (UserAlreadyExistsException | ConstraintViolationException e){
+            returnMessage = e.getMessage();
         }
+
+        return ResponseEntity.badRequest().body(returnMessage);
     }
 }
