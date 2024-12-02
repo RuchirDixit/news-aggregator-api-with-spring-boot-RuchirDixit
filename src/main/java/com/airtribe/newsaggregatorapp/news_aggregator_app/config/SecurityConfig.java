@@ -24,6 +24,7 @@ public class SecurityConfig {
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -37,6 +38,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Method to encrypt password while storing in Database
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

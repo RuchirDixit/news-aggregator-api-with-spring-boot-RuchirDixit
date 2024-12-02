@@ -16,8 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
-// To authenticate user using JWT token before making any request
-
+// Custom Filter class to authenticate user using JWT token before making any request, used in SecurityConfig securityFilterChain method
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
@@ -29,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             try {
-                String SECRET_KEY = "GD4SprIxMP04xq5dEvvbB3olKdiT9uVVO4AA8ClPAXQ=";
+                String SECRET_KEY = System.getenv("SECRET_KEY");
                 Claims claims = Jwts.parser()
                         .setSigningKey(SECRET_KEY)
                         .parseClaimsJws(token)

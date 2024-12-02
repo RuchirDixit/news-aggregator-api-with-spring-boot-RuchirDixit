@@ -1,5 +1,6 @@
 package com.airtribe.newsaggregatorapp.news_aggregator_app.dto;
 
+// response Body of login api
 public class LoginResponse {
     private String token;
 

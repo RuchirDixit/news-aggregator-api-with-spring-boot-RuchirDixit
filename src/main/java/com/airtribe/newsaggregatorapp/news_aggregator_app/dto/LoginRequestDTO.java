@@ -1,5 +1,6 @@
 package com.airtribe.newsaggregatorapp.news_aggregator_app.dto;
 
+// Request Body of login api
 public class LoginRequestDTO {
 
     private String username;

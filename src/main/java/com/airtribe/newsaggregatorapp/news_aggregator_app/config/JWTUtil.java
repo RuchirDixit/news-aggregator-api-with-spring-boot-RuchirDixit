@@ -5,11 +5,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+// Class to generate JWT token and extract username
 @Component
 public class JWTUtil {
 
-    private final String SECRET_KEY = "GD4SprIxMP04xq5dEvvbB3olKdiT9uVVO4AA8ClPAXQ=";
+    private final String SECRET_KEY = System.getenv("SECRET_KEY");
 
+    /**
+     * Generate JWT token on basis of username
+     * @param username
+     * @return
+     */
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -27,6 +33,11 @@ public class JWTUtil {
         return username.equals(extractUsername(token)) && !isTokenExpired(token);
     }
 
+    /**
+     * Check if token is expired on basis of current date
+     * @param token
+     * @return
+     */
     private boolean isTokenExpired(String token) {
         Date expiration = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration();
         return expiration.before(new Date());

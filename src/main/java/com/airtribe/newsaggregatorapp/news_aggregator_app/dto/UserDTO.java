@@ -4,6 +4,7 @@ import com.airtribe.newsaggregatorapp.news_aggregator_app.entity.NewsPreference;
 
 import java.util.List;
 
+// Request Body of register api
 public class UserDTO {
 
     private String username;
