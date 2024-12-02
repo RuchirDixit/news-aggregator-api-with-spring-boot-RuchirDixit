@@ -65,4 +65,28 @@ public class UserService {
         user.getPreferences().forEach(preference -> preferences.add(preference.getCategory()));
         return preferences;
     }
+
+    public Users updateUsersNewsPreference(String username, List<String> categories) {
+        Users user = userRepository.findByUsername(username);
+        if(user.getPreferences()!=null || !user.getPreferences().isEmpty()){
+            // Detach preferences from the user entity
+            for (NewsPreference preference : user.getPreferences()) {
+                preference.setUsers(null);
+            }
+        }
+        // delete all existing preferences of user
+        newsPreferenceRepository.deleteAll(user.getPreferences());
+        user.getPreferences().clear();
+        List<NewsPreference> preferenceList = new ArrayList<>();
+        // update users preference by new preference passed in categories
+        for(String newPreferences : categories){
+            NewsPreference newsPreference = new NewsPreference();
+            newsPreference.setUsers(user);
+            newsPreference.setCategory(newPreferences);
+            preferenceList.add(newsPreference);
+        }
+        user.setPreferences(preferenceList);
+        userRepository.save(user);
+        return user;
+    }
 }

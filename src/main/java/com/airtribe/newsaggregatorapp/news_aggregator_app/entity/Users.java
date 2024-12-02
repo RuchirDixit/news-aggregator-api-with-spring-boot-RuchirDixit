@@ -60,6 +60,7 @@ public class Users {
     @Column(unique = true, nullable = false)
     private String email;
 
+    // maps the "users" attribute in NewsPreference entity, cascade to ensure child is also updated once parent is updated
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<NewsPreference> preferences;
 
