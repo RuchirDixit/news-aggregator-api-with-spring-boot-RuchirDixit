@@ -12,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -52,5 +52,14 @@ public class UserController {
             );
         String token = jwtUtil.generateToken(authentication.getName());
         return ResponseEntity.ok(token);
+    }
+
+    @GetMapping("/preferences")
+    public ResponseEntity<List<String>> getPreferences(@RequestHeader("Authorization")String authorizationHeader) {
+        // Extract token from Bearer Token value passed
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        List<String> preferences = new ArrayList<>(userService.fetchNewsPreferenceOfUser(username));
+        return ResponseEntity.ok(preferences);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -56,5 +57,12 @@ public class UserService {
         }
         users.setPreferences(preferenceList);
         return users;
+    }
+
+    public List<String> fetchNewsPreferenceOfUser(String username) {
+        Users user = userRepository.findByUsername(username);
+        List<String> preferences = new ArrayList<>();
+        user.getPreferences().forEach(preference -> preferences.add(preference.getCategory()));
+        return preferences;
     }
 }
